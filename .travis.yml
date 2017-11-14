@@ -1,0 +1,20 @@
+language: java
+    # specifying other dists doesn't make sense because `trusty` doesn't have `oraclejdk8` (fails due to `Sorry, but JDK '[oraclejdk8]' is not known.`) which is the only supported JDK currently. Testing on Mac OSX doesn't make too much sense since it will run the same `maven` based build routine.
+
+jdk:
+- oraclejdk9
+    # list of available JDKs for trusty is at https://docs.travis-ci.com/user/reference/trusty/#JVM-(Clojure%2C-Groovy%2C-Java%2C-Scala)-images
+
+#env:
+#- MAVEN_OPTS="-Xmx6g -Xms2g"
+
+install:
+- sudo add-apt-repository --yes ppa:cwchien/gradle
+    # the gradle version 4.0.1 provided by Travis causes `cannot specify both --source-path and --module-source-path` which is fixed in 4.1<ref>https://github.com/gradle/gradle/issues/2537</ref>
+- sudo apt-get update
+- sudo apt-get install --yes gradle libgtk2.0-dev libxtst-dev libgtk-3-dev
+    # the gradle binary provided by Travis is in /usr/local/bin/
+- which -a gradle
+
+script:
+- /usr/bin/gradle --stacktrace
